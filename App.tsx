@@ -9,7 +9,7 @@ import Footer from './components/Footer';
 import InfoModal from './components/InfoModal';
 import { Product, CartItem, CategoryItem } from './types';
 import { auth, db } from './lib/firebase';
-import firebase from 'firebase/compat/app';
+import { User } from 'firebase/auth';
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<'home' | 'products' | 'admin'>('home');
@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [infoModal, setInfoModal] = useState<{ isOpen: boolean; type: string }>({ isOpen: false, type: '' });
-  const [user, setUser] = useState<firebase.User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +44,7 @@ const App: React.FC = () => {
   useEffect(() => {
     // Using compat listener for auth state changes
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-      setUser(currentUser as firebase.User | null);
+      setUser(currentUser as User | null);
       if (currentUser) {
         try {
           const adminDoc = await db.collection('admins').doc(currentUser.uid).get();
